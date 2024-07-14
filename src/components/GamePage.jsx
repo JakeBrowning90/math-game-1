@@ -1,4 +1,19 @@
+import { useState } from "react";
+
 function GamePage({ navToHome }) {
+  const [number, setNumber] = useState(0);
+  const [addend1, setAddend1] = useState(0);
+  const [addend2, setAddend2] = useState(0);
+
+  const generateNumber = () => {
+    const number = Math.floor(Math.random() * 100);
+    const addend1 = number - Math.floor(Math.random() * number);
+    const addend2 = number - addend1;
+    setNumber(number);
+    setAddend1(addend1);
+    setAddend2(addend2);
+  };
+
   return (
     <div>
       <button onClick={navToHome}>Home</button>
@@ -53,6 +68,11 @@ function GamePage({ navToHome }) {
         </label>
         <button>Submit</button>
       </form>
+      <h1>{number}</h1>
+      <h1>
+        {addend1} + {addend2}
+      </h1>
+      <button onClick={generateNumber}>Generate number</button>
     </div>
   );
 }
