@@ -2,11 +2,12 @@ import { useState } from "react";
 
 function GamePage({ navToHome }) {
   const [sum, setSum] = useState(0);
-  const [addend1, setAddend1] = useState(0);
-  const [addend2, setAddend2] = useState(0);
-  const [product, setProduct] = useState(0);
-  const [factor1, setFactor1] = useState(0);
-  const [factor2, setFactor2] = useState(0);
+  const [addend1, setAddend1] = useState('');
+  const [addend2, setAddend2] = useState('');
+  const [product, setProduct] = useState('');
+  const [factor1, setFactor1] = useState('');
+  const [factor2, setFactor2] = useState('');
+  const [answer, setAnswer] = useState('');
 
   const generateAddSub = () => {
     const sum = Math.floor(Math.random() * 100);
@@ -24,6 +25,17 @@ function GamePage({ navToHome }) {
     setProduct(product);
     setFactor1(factor1);
     setFactor2(factor2);
+  };
+
+  const checkAnswer = (e) => {
+    e.preventDefault();
+    if (answer == sum) {
+      console.log("Correct!")
+    } else {
+      console.log("Try again!")
+    }
+    generateAddSub();
+    setAnswer('')
   };
 
   return (
@@ -121,6 +133,17 @@ function GamePage({ navToHome }) {
         </h1>
 
         <button onClick={generateMultDiv}>Generate number</button>
+
+        <form onSubmit={checkAnswer}>
+          <input
+            name="answer"
+            type="number"
+            id="answer"
+            value={answer}
+            onChange={e => setAnswer(Number(e.target.value))}
+          />
+          <button>Check</button>
+        </form>
       </div>
     </div>
   );
