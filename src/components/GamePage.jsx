@@ -1,17 +1,29 @@
 import { useState } from "react";
 
 function GamePage({ navToHome }) {
-  const [number, setNumber] = useState(0);
+  const [sum, setSum] = useState(0);
   const [addend1, setAddend1] = useState(0);
   const [addend2, setAddend2] = useState(0);
+  const [product, setProduct] = useState(0);
+  const [factor1, setFactor1] = useState(0);
+  const [factor2, setFactor2] = useState(0);
 
-  const generateNumber = () => {
-    const number = Math.floor(Math.random() * 100);
-    const addend1 = number - Math.floor(Math.random() * number);
-    const addend2 = number - addend1;
-    setNumber(number);
+  const generateAddSub = () => {
+    const sum = Math.floor(Math.random() * 100);
+    const addend1 = sum - Math.floor(Math.random() * sum);
+    const addend2 = sum - addend1;
+    setSum(sum);
     setAddend1(addend1);
     setAddend2(addend2);
+  };
+
+  const generateMultDiv = () => {
+    const factor1 = Math.floor(Math.random() * 10);
+    const factor2 = Math.floor(Math.random() * 10);
+    const product = factor1 * factor2;
+    setProduct(product);
+    setFactor1(factor1);
+    setFactor2(factor2);
   };
 
   return (
@@ -68,11 +80,48 @@ function GamePage({ navToHome }) {
         </label>
         <button>Submit</button>
       </form>
-      <h1>{number}</h1>
-      <h1>
-        {addend1} + {addend2}
-      </h1>
-      <button onClick={generateNumber}>Generate number</button>
+
+      <div>
+        <h1>
+          {" "}
+          Addition attack: {addend1} + {addend2} = __
+        </h1>
+        <h1>
+          {" "}
+          Subtraction attack: {sum} - {addend1} = __
+        </h1>
+        <h1>
+          {" "}
+          Addition defend: {addend1} + __ = {sum}
+        </h1>
+        <h1>
+          {" "}
+          Subtraction defend: {sum} - __ = {addend1}
+        </h1>
+
+        <button onClick={generateAddSub}>Generate number</button>
+      </div>
+
+      <div>
+        <h1>
+          {" "}
+          Multiplication attack: {factor1} x {factor2} = __
+        </h1>
+        <h1>
+          {" "}
+          Division attack: {product} % {factor1} = __
+        </h1>
+        <h1>
+          {" "}
+          Multiplication defend: {factor1} x __ = {product}
+        </h1>
+        <h1>
+          {" "}
+          Division defend: {product} % __ = {factor1}
+        </h1>
+
+        <button onClick={generateMultDiv}>Generate number</button>
+      </div>
     </div>
   );
 }
