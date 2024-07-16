@@ -134,31 +134,36 @@ function GamePage({ navToHome }) {
         </form>
 
         <form action="">
-          <label htmlFor="">
-            {" "}
-            Addition
-            <input type="radio" />
-          </label>
-          <label htmlFor="">
-            {" "}
-            Subtraction
-            <input type="radio" />
-          </label>
-          <label htmlFor="">
-            {" "}
-            Multiplication
-            <input type="radio" />
-          </label>
-          <label htmlFor="">
-            {" "}
-            Division
-            <input type="radio" />
-          </label>
+          <fieldset>
+            <label htmlFor="">
+              {" "}
+              Addition
+              <input type="radio" name="gameMode" value="1" />
+            </label>
+            <label htmlFor="">
+              {" "}
+              Subtraction
+              <input type="radio" name="gameMode" value="2"/>
+            </label>
+            <label htmlFor="">
+              {" "}
+              Multiplication
+              <input type="radio" name="gameMode" value="3"/>
+            </label>
+            <label htmlFor="">
+              {" "}
+              Division
+              <input type="radio" name="gameMode" value="4"/>
+            </label>
+          </fieldset>
+
           <button>Submit</button>
         </form>
       </div>
 
-      <button onClick={togglePhase}>{attackPhase ? "Switch to defense" : "Switch to attack"}</button>
+      <button onClick={togglePhase}>
+        {attackPhase ? "Switch to defense" : "Switch to attack"}
+      </button>
 
       <div className="equationCard">
         <div>{feedback}</div>
