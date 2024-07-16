@@ -1,14 +1,10 @@
 import { useState } from "react";
 
 function GamePage({ navToHome }) {
-  const [gameMode, setGameMode] = useState(4);
+  const [gameMode, setGameMode] = useState(3);
+  const [cap, setCap] = useState(10);
+  const [floor, setFloor] = useState(0)
   const [attackPhase, setAttackPhase] = useState(true);
-  const [sum, setSum] = useState(0);
-  const [addend1, setAddend1] = useState("");
-  const [addend2, setAddend2] = useState("");
-  const [product, setProduct] = useState("");
-  const [factor1, setFactor1] = useState("");
-  const [factor2, setFactor2] = useState("");
   const [feedback, setFeedback] = useState("");
   const [printedEquation, setPrintedEquation] = useState("");
   const [missingValue, setMissingValue] = useState("");
@@ -75,15 +71,15 @@ function GamePage({ navToHome }) {
   };
 
   const generateAddSub = () => {
-    const sum = getRandomInt(1, 20)
-    const addend1 = sum - getRandomInt(1, sum)
+    const sum = getRandomInt(floor, cap);
+    const addend1 = sum - getRandomInt(floor, sum);
     const addend2 = sum - addend1;
     return [addend1, addend2, sum];
   };
 
   const generateMultDiv = () => {
-    const factor1 = getRandomInt(1, 10)
-    const factor2 = getRandomInt(1, 10)
+    const factor1 = getRandomInt(1, cap);
+    const factor2 = getRandomInt(1, cap);
     const product = factor1 * factor2;
     return [factor1, factor2, product];
   };
@@ -156,48 +152,6 @@ function GamePage({ navToHome }) {
           </label>
           <button>Submit</button>
         </form>
-      </div>
-
-      <div className="equationsDiv">
-        <h1>
-          {" "}
-          Addition attack: {addend1} + {addend2} = __
-        </h1>
-        <h1>
-          {" "}
-          Subtraction attack: {sum} - {addend1} = __
-        </h1>
-        <h1>
-          {" "}
-          Addition defend: {addend1} + __ = {sum}
-        </h1>
-        <h1>
-          {" "}
-          Subtraction defend: {sum} - __ = {addend1}
-        </h1>
-
-        <button onClick={generateAddSub}>Generate +/-</button>
-      </div>
-
-      <div className="equationsDiv">
-        <h1>
-          {" "}
-          Multiplication attack: {factor1} x {factor2} = __
-        </h1>
-        <h1>
-          {" "}
-          Division attack: {product} % {factor1} = __
-        </h1>
-        <h1>
-          {" "}
-          Multiplication defend: {factor1} x __ = {product}
-        </h1>
-        <h1>
-          {" "}
-          Division defend: {product} % __ = {factor1}
-        </h1>
-
-        <button onClick={generateMultDiv}>Generate x/%</button>
       </div>
 
       <div className="equationCard">
