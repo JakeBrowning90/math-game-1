@@ -3,12 +3,16 @@ import { useState } from "react";
 function GamePage({ navToHome }) {
   const [gameMode, setGameMode] = useState(3);
   const [cap, setCap] = useState(10);
-  const [floor, setFloor] = useState(0)
+  const [floor, setFloor] = useState(0);
   const [attackPhase, setAttackPhase] = useState(true);
   const [feedback, setFeedback] = useState("");
   const [printedEquation, setPrintedEquation] = useState("");
   const [missingValue, setMissingValue] = useState("");
   const [answer, setAnswer] = useState("");
+
+  const togglePhase = () => {
+    setAttackPhase(!attackPhase);
+  };
 
   const getRandomInt = (min, max) => {
     const minCeiled = Math.ceil(min);
@@ -153,6 +157,8 @@ function GamePage({ navToHome }) {
           <button>Submit</button>
         </form>
       </div>
+
+      <button onClick={togglePhase}>{attackPhase ? "Switch to defense" : "Switch to attack"}</button>
 
       <div className="equationCard">
         <div>{feedback}</div>
