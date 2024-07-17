@@ -17,9 +17,31 @@ function GamePage({ navToHome }) {
   const [missingValue, setMissingValue] = useState("");
   const [answer, setAnswer] = useState("");
 
+  const handlePlayerName = (e) => {
+    setPlayerName(e.target.value);
+  };
+
   const startGame = () => {
     setStartingHP();
-    generateEquation();
+    while (playerHP > 0 && playerLevel < 10) {
+      // Get monster from array
+      while (monsterHP > 0) {
+        if (playerHP > 0) {
+          // Solve 3 problems
+          // Apply damage to monster
+        } else {
+          // BREAK - Begin game over
+        }
+        if (monsterHP > 0) {
+          // Solve 3 problems
+          // Apply damage to player
+        } else {
+          // Increase playerLevel
+          // Increase cap / floor
+        }
+      }
+    }
+    // generateEquation();
   };
 
   const togglePhase = () => {
@@ -142,9 +164,16 @@ function GamePage({ navToHome }) {
         <form action="">
           <label htmlFor="playerName">
             Player Name:
-            <input type="text" id="playerName"/>
+            <input
+              type="text"
+              name="playerName"
+              id="playerName"
+              minLength="1"
+              maxLength="10"
+              value={playerName}
+              onChange={handlePlayerName}
+            />
           </label>
-          <button>Submit</button>
         </form>
 
         <form action="">
@@ -250,7 +279,6 @@ function GamePage({ navToHome }) {
       <div className="enemyInfoCard">
         <div>Enemy type: </div>
         <div>Enemy HP: </div>
-
       </div>
       <div className="equationCard">
         <div>{feedback}</div>
