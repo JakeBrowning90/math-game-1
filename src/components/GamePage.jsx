@@ -1,7 +1,11 @@
 import { useState } from "react";
 
 function GamePage({ navToHome }) {
-  const [gameMode, setGameMode] = useState(1);
+  const [currentStreak, setCurrentStreak] = useState(0);
+  const [bestStreak, setBestStreak] = useState(0);
+
+  const [difficulty, setDifficulty] = useState("Easy");
+  const [gameMode, setGameMode] = useState("Addition");
   const [cap, setCap] = useState(10);
   const [floor, setFloor] = useState(0);
   const [attackPhase, setAttackPhase] = useState(true);
@@ -20,19 +24,21 @@ function GamePage({ navToHome }) {
     return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
   };
 
+  const changeDifficulty = (e) => {
+    setDifficulty(e.target.value);
+  };
+
   const changeMode = (e) => {
     setGameMode(e.target.value);
-    console.log("Mode set!");
-    console.log(gameMode);
   };
 
   const generateEquation = () => {
     // Get values
     let values = [];
-    if (gameMode == 1 || gameMode == 2) {
+    if (gameMode == "Addition" || gameMode == "Subtraction") {
       // Get add/sub values
       values = generateAddSub();
-      if (gameMode == 1) {
+      if (gameMode == "Addition") {
         if (attackPhase == true) {
           // X + Y = (Z)
           setPrintedEquation(`${values[0]} + ${values[1]} = __`);
@@ -42,7 +48,7 @@ function GamePage({ navToHome }) {
           setPrintedEquation(`${values[0]} + __ = ${values[2]}`);
           setMissingValue(values[1]);
         }
-      } else if (gameMode == 2) {
+      } else if (gameMode == "Subtraction") {
         if (attackPhase == true) {
           // Z - X = (Y)
           setPrintedEquation(`${values[2]} - ${values[0]} = __`);
@@ -53,10 +59,10 @@ function GamePage({ navToHome }) {
           setMissingValue(values[1]);
         }
       }
-    } else if (gameMode == 3 || gameMode == 4) {
+    } else if (gameMode == "Multiplication" || gameMode == "Division") {
       // Get mult/div values
       values = generateMultDiv();
-      if (gameMode == 3) {
+      if (gameMode == "Multiplication") {
         if (attackPhase == true) {
           // X * Y = (Z)
           setPrintedEquation(`${values[0]} x ${values[1]} = __`);
@@ -66,7 +72,7 @@ function GamePage({ navToHome }) {
           setPrintedEquation(`${values[0]} x __ = ${values[2]}`);
           setMissingValue(values[1]);
         }
-      } else if (gameMode == 4) {
+      } else if (gameMode == "Division") {
         if (attackPhase == true) {
           // Z / X = (Y)
           setPrintedEquation(`${values[2]} % ${values[0]} = __`);
@@ -97,11 +103,14 @@ function GamePage({ navToHome }) {
   const checkAnswer = (e) => {
     e.preventDefault();
     if (answer == missingValue) {
-      console.log("Correct!");
       setFeedback("Correct!");
+      setCurrentStreak((currentStreak) => currentStreak + 1);
+      if (currentStreak >= bestStreak) {
+        setBestStreak((bestStreak) => bestStreak + 1);
+      }
     } else {
-      console.log("Miss!");
       setFeedback("Miss!");
+      setCurrentStreak((currentStreak) => currentStreak - currentStreak);
     }
     generateEquation();
     setAnswer("");
@@ -119,24 +128,41 @@ function GamePage({ navToHome }) {
           </label>
           <button>Submit</button>
         </form>
-        <button onClick={generateEquation}>Generate equation</button>
+
         <form action="">
-          <label htmlFor="">
-            {" "}
+          <label htmlFor="easy">
             Easy
-            <input type="radio" />
+            <input
+              type="radio"
+              name="difficulty"
+              id="easy"
+              value="Easy"
+              checked={difficulty == "Easy"}
+              onChange={changeDifficulty}
+            />
           </label>
-          <label htmlFor="">
-            {" "}
+          <label htmlFor="medium">
             Medium
-            <input type="radio" />
+            <input
+              type="radio"
+              name="difficulty"
+              id="medium"
+              value="Medium"
+              checked={difficulty == "Medium"}
+              onChange={changeDifficulty}
+            />
           </label>
-          <label htmlFor="">
-            {" "}
+          <label htmlFor="hard">
             Hard
-            <input type="radio" />
+            <input
+              type="radio"
+              name="difficulty"
+              id="hard"
+              value="Hard"
+              checked={difficulty == "Hard"}
+              onChange={changeDifficulty}
+            />
           </label>
-          <button>Submit</button>
         </form>
 
         <form>
@@ -147,8 +173,8 @@ function GamePage({ navToHome }) {
                 type="radio"
                 name="gameMode"
                 id="gameMode1"
-                value="1"
-                checked={gameMode == 1}
+                value="Addition"
+                checked={gameMode == "Addition"}
                 onChange={changeMode}
               />
             </label>
@@ -158,8 +184,8 @@ function GamePage({ navToHome }) {
                 type="radio"
                 name="gameMode"
                 id="gameMode2"
-                value="2"
-                checked={gameMode == 2}
+                value="Subtraction"
+                checked={gameMode == "Subtraction"}
                 onChange={changeMode}
               />
             </label>
@@ -169,8 +195,8 @@ function GamePage({ navToHome }) {
                 type="radio"
                 name="gameMode"
                 id="gameMode3"
-                value="3"
-                checked={gameMode == 3}
+                value="Multiplication"
+                checked={gameMode == "Multiplication"}
                 onChange={changeMode}
               />
             </label>
@@ -180,19 +206,27 @@ function GamePage({ navToHome }) {
                 type="radio"
                 name="gameMode"
                 id="gameMode4"
-                value="4"
-                checked={gameMode == 4}
+                value="Division"
+                checked={gameMode == "Division"}
                 onChange={changeMode}
               />
             </label>
           </fieldset>
         </form>
+        <button onClick={generateEquation}>
+          Start Game (Generate equation)
+        </button>
       </div>
 
       <button onClick={togglePhase}>
         {attackPhase ? "Switch to defense" : "Switch to attack"}
       </button>
-
+      <div className="gameInfoCard">
+        <div>Difficulty: {difficulty}</div>
+        <div>Problem type: {gameMode}</div>
+        <div>Current Streak: {currentStreak}</div>
+        <div>Best Streak: {bestStreak}</div>
+      </div>
       <div className="equationCard">
         <div>{feedback}</div>
         <div>{printedEquation}</div>
