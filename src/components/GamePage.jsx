@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 function GamePage({ navToHome }) {
+  const [playerName, setPlayerName] = useState("");
   const [difficulty, setDifficulty] = useState("Easy");
   const [playerHP, setPlayerHP] = useState(0);
   const [playerLevel, setPlayerLevel] = useState(1);
@@ -139,9 +140,9 @@ function GamePage({ navToHome }) {
       <h1>Game Page</h1>
       <div className="playerSetup">
         <form action="">
-          <label htmlFor="">
+          <label htmlFor="playerName">
             Player Name:
-            <input type="text" />
+            <input type="text" id="playerName"/>
           </label>
           <button>Submit</button>
         </form>
@@ -237,6 +238,7 @@ function GamePage({ navToHome }) {
         {attackPhase ? "Switch to defense" : "Switch to attack"}
       </button>
       <div className="gameInfoCard">
+        <div>Name: {playerName}</div>
         <div>Level: {playerLevel}</div>
         <div>Player HP: {playerHP}</div>
         <div>Difficulty: {difficulty}</div>
@@ -244,6 +246,11 @@ function GamePage({ navToHome }) {
         <div>Cap: {cap}</div>
         <div>Current Streak: {currentStreak}</div>
         <div>Best Streak: {bestStreak}</div>
+      </div>
+      <div className="enemyInfoCard">
+        <div>Enemy type: </div>
+        <div>Enemy HP: </div>
+
       </div>
       <div className="equationCard">
         <div>{feedback}</div>
