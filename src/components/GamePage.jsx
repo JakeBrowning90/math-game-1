@@ -1,4 +1,5 @@
 import { useState } from "react";
+import monsters from "./monsterIndex";
 
 function GamePage({ navToHome }) {
   const [playerName, setPlayerName] = useState("");
@@ -8,7 +9,9 @@ function GamePage({ navToHome }) {
   const [gameMode, setGameMode] = useState("Addition");
   const [currentStreak, setCurrentStreak] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
-
+  const [monster, setMonster] = useState();
+  const [monsterHP, setMonsterHP] = useState(0);
+  const [turnCounter, setTurnCounter] = useState(0);
   const [cap, setCap] = useState(10);
   const [floor, setFloor] = useState(0);
   const [attackPhase, setAttackPhase] = useState(true);
@@ -23,11 +26,18 @@ function GamePage({ navToHome }) {
 
   const startGame = () => {
     setStartingHP();
+      // Get monster from array
+      setMonster(monsters[playerLevel - 1]);
+      setMonsterHP(monsters[playerLevel - 1].hp);
     while (playerHP > 0 && playerLevel < 10) {
       // Get monster from array
+      setMonster(monsters[playerLevel - 1]);
+      setMonsterHP(monsters[playerLevel - 1].hp);
       while (monsterHP > 0) {
         if (playerHP > 0) {
           // Solve 3 problems
+          runCombatTurn();
+          // generateEquation();
           // Apply damage to monster
         } else {
           // BREAK - Begin game over
@@ -41,7 +51,14 @@ function GamePage({ navToHome }) {
         }
       }
     }
-    // generateEquation();
+    generateEquation();
+  };
+
+  const runCombatTurn = () => {
+    while (turnCounter < 3) {
+      // console.log("Combat...")
+    }
+    return
   };
 
   const togglePhase = () => {
@@ -152,6 +169,7 @@ function GamePage({ navToHome }) {
       setFeedback("Miss!");
       setCurrentStreak((currentStreak) => currentStreak - currentStreak);
     }
+    setTurnCounter(turnCounter => turnCounter + 1)
     generateEquation();
     setAnswer("");
   };
@@ -276,10 +294,13 @@ function GamePage({ navToHome }) {
         <div>Current Streak: {currentStreak}</div>
         <div>Best Streak: {bestStreak}</div>
       </div>
-      <div className="enemyInfoCard">
-        <div>Enemy type: </div>
-        <div>Enemy HP: </div>
-      </div>
+      {monster && (
+        <div className="enemyInfoCard">
+          <div>Enemy type: {monster.name} </div>
+          <div>Enemy HP: {monsterHP}</div>
+        </div>
+      )}
+
       <div className="equationCard">
         <div>{feedback}</div>
         <div>{printedEquation}</div>
