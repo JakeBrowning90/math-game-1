@@ -1,11 +1,13 @@
 import { useState } from "react";
 
 function GamePage({ navToHome }) {
+  const [difficulty, setDifficulty] = useState("Easy");
+  const [playerHP, setPlayerHP] = useState(0);
+  const [playerLevel, setPlayerLevel] = useState(1);
+  const [gameMode, setGameMode] = useState("Addition");
   const [currentStreak, setCurrentStreak] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
 
-  const [difficulty, setDifficulty] = useState("Easy");
-  const [gameMode, setGameMode] = useState("Addition");
   const [cap, setCap] = useState(10);
   const [floor, setFloor] = useState(0);
   const [attackPhase, setAttackPhase] = useState(true);
@@ -13,6 +15,11 @@ function GamePage({ navToHome }) {
   const [printedEquation, setPrintedEquation] = useState("");
   const [missingValue, setMissingValue] = useState("");
   const [answer, setAnswer] = useState("");
+
+  const startGame = () => {
+    setStartingHP();
+    generateEquation();
+  };
 
   const togglePhase = () => {
     setAttackPhase(!attackPhase);
@@ -26,6 +33,16 @@ function GamePage({ navToHome }) {
 
   const changeDifficulty = (e) => {
     setDifficulty(e.target.value);
+  };
+
+  const setStartingHP = () => {
+    if (difficulty == "Easy") {
+      setPlayerHP(15);
+    } else if (difficulty == "Medium") {
+      setPlayerHP(10);
+    } else if (difficulty == "Hard") {
+      setPlayerHP(5);
+    }
   };
 
   const changeMode = (e) => {
@@ -213,17 +230,18 @@ function GamePage({ navToHome }) {
             </label>
           </fieldset>
         </form>
-        <button onClick={generateEquation}>
-          Start Game (Generate equation)
-        </button>
+        <button onClick={startGame}>Start Game (Generate equation)</button>
       </div>
 
       <button onClick={togglePhase}>
         {attackPhase ? "Switch to defense" : "Switch to attack"}
       </button>
       <div className="gameInfoCard">
+        <div>Level: {playerLevel}</div>
+        <div>Player HP: {playerHP}</div>
         <div>Difficulty: {difficulty}</div>
         <div>Problem type: {gameMode}</div>
+        <div>Cap: {cap}</div>
         <div>Current Streak: {currentStreak}</div>
         <div>Best Streak: {bestStreak}</div>
       </div>
