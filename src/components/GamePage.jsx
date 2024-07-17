@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 function GamePage({ navToHome }) {
-  const [gameMode, setGameMode] = useState(3);
+  const [gameMode, setGameMode] = useState(1);
   const [cap, setCap] = useState(10);
   const [floor, setFloor] = useState(0);
   const [attackPhase, setAttackPhase] = useState(true);
@@ -18,6 +18,12 @@ function GamePage({ navToHome }) {
     const minCeiled = Math.ceil(min);
     const maxFloored = Math.floor(max);
     return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
+  };
+
+  const changeMode = (e) => {
+    setGameMode(e.target.value);
+    console.log("Mode set!");
+    console.log(gameMode);
   };
 
   const generateEquation = () => {
@@ -133,31 +139,53 @@ function GamePage({ navToHome }) {
           <button>Submit</button>
         </form>
 
-        <form action="">
+        <form>
           <fieldset>
-            <label htmlFor="">
-              {" "}
+            <label htmlFor="gameMode1">
               Addition
-              <input type="radio" name="gameMode" value="1" />
+              <input
+                type="radio"
+                name="gameMode"
+                id="gameMode1"
+                value="1"
+                checked={gameMode == 1}
+                onChange={changeMode}
+              />
             </label>
-            <label htmlFor="">
-              {" "}
+            <label htmlFor="gameMode2">
               Subtraction
-              <input type="radio" name="gameMode" value="2"/>
+              <input
+                type="radio"
+                name="gameMode"
+                id="gameMode2"
+                value="2"
+                checked={gameMode == 2}
+                onChange={changeMode}
+              />
             </label>
-            <label htmlFor="">
-              {" "}
+            <label htmlFor="gameMode3">
               Multiplication
-              <input type="radio" name="gameMode" value="3"/>
+              <input
+                type="radio"
+                name="gameMode"
+                id="gameMode3"
+                value="3"
+                checked={gameMode == 3}
+                onChange={changeMode}
+              />
             </label>
-            <label htmlFor="">
-              {" "}
+            <label htmlFor="gameMode4">
               Division
-              <input type="radio" name="gameMode" value="4"/>
+              <input
+                type="radio"
+                name="gameMode"
+                id="gameMode4"
+                value="4"
+                checked={gameMode == 4}
+                onChange={changeMode}
+              />
             </label>
           </fieldset>
-
-          <button>Submit</button>
         </form>
       </div>
 
