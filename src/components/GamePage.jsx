@@ -171,10 +171,11 @@ function GamePage({ navToHome }) {
       setCurrentStreak((currentStreak) => currentStreak - currentStreak);
     }
     setAnswer("");
-    setTurnCounter((turnCounter) => turnCounter + 1);
     if (turnCounter > 2) {
       setTurnCounter(1);
       togglePhase();
+    } else {
+      setTurnCounter((turnCounter) => turnCounter + 1);
     }
     generateEquation();
   };
