@@ -11,10 +11,10 @@ function GamePage({ navToHome }) {
   const [bestStreak, setBestStreak] = useState(0);
   const [monster, setMonster] = useState();
   const [monsterHP, setMonsterHP] = useState(0);
-  const [turnCounter, setTurnCounter] = useState(0);
+  const [turnCounter, setTurnCounter] = useState(1);
   const [cap, setCap] = useState(10);
   const [floor, setFloor] = useState(0);
-  const [attackPhase, setAttackPhase] = useState(true);
+  const [playerTurn, setPlayerTurn] = useState(true);
   const [feedback, setFeedback] = useState("");
   const [printedEquation, setPrintedEquation] = useState("");
   const [missingValue, setMissingValue] = useState("");
@@ -24,45 +24,44 @@ function GamePage({ navToHome }) {
     setPlayerName(e.target.value);
   };
 
+  const togglePhase = () => {
+    setPlayerTurn(playerTurn => !playerTurn);
+  }
+
   const startGame = () => {
     setStartingHP();
-      // Get monster from array
-      setMonster(monsters[playerLevel - 1]);
-      setMonsterHP(monsters[playerLevel - 1].hp);
-    while (playerHP > 0 && playerLevel < 10) {
-      // Get monster from array
-      setMonster(monsters[playerLevel - 1]);
-      setMonsterHP(monsters[playerLevel - 1].hp);
-      while (monsterHP > 0) {
-        if (playerHP > 0) {
-          // Solve 3 problems
-          runCombatTurn();
-          // generateEquation();
-          // Apply damage to monster
-        } else {
-          // BREAK - Begin game over
-        }
-        if (monsterHP > 0) {
-          // Solve 3 problems
-          // Apply damage to player
-        } else {
-          // Increase playerLevel
-          // Increase cap / floor
-        }
-      }
-    }
+    // Get monster from array
+    getNextMonster();
+    // while (playerHP > 0 && playerLevel < 10) {
+    //   // Get monster from array
+    //   setMonster(monsters[playerLevel - 1]);
+    //   setMonsterHP(monsters[playerLevel - 1].hp);
+    //   console.log(monsterHP);
+
+    //   while (monsterHP > 0) {
+    //     if (playerHP > 0) {
+    //       // Solve 3 problems
+    //       runCombatTurn();
+    //       // generateEquation();
+    //       // Apply damage to monster
+    //     } else {
+    //       // BREAK - Begin game over
+    //     }
+    //     if (monsterHP > 0) {
+    //       // Solve 3 problems
+    //       // Apply damage to player
+    //     } else {
+    //       // Increase playerLevel
+    //       // Increase cap / floor
+    //     }
+    //   }
+    // }
     generateEquation();
   };
 
-  const runCombatTurn = () => {
-    while (turnCounter < 3) {
-      // console.log("Combat...")
-    }
-    return
-  };
-
-  const togglePhase = () => {
-    setAttackPhase(!attackPhase);
+  const getNextMonster = () => {
+    setMonster(monsters[playerLevel - 1]);
+    setMonsterHP(monsters[playerLevel - 1].hp);
   };
 
   const getRandomInt = (min, max) => {
@@ -89,24 +88,26 @@ function GamePage({ navToHome }) {
     setGameMode(e.target.value);
   };
 
-  const generateEquation = () => {
+  const generateEquation = (x) => {
     // Get values
     let values = [];
     if (gameMode == "Addition" || gameMode == "Subtraction") {
       // Get add/sub values
       values = generateAddSub();
       if (gameMode == "Addition") {
-        if (attackPhase == true) {
+        if (playerTurn) {
           // X + Y = (Z)
           setPrintedEquation(`${values[0]} + ${values[1]} = __`);
           setMissingValue(values[2]);
+          console.log("Player's turn");
         } else {
           // X + (Y) = Z
           setPrintedEquation(`${values[0]} + __ = ${values[2]}`);
           setMissingValue(values[1]);
+          console.log("Monster's turn");
         }
       } else if (gameMode == "Subtraction") {
-        if (attackPhase == true) {
+        if (playerTurn) {
           // Z - X = (Y)
           setPrintedEquation(`${values[2]} - ${values[0]} = __`);
           setMissingValue(values[1]);
@@ -120,7 +121,7 @@ function GamePage({ navToHome }) {
       // Get mult/div values
       values = generateMultDiv();
       if (gameMode == "Multiplication") {
-        if (attackPhase == true) {
+        if (playerTurn == true) {
           // X * Y = (Z)
           setPrintedEquation(`${values[0]} x ${values[1]} = __`);
           setMissingValue(values[2]);
@@ -130,7 +131,7 @@ function GamePage({ navToHome }) {
           setMissingValue(values[1]);
         }
       } else if (gameMode == "Division") {
-        if (attackPhase == true) {
+        if (playerTurn == true) {
           // Z / X = (Y)
           setPrintedEquation(`${values[2]} % ${values[0]} = __`);
           setMissingValue(values[1]);
@@ -169,9 +170,13 @@ function GamePage({ navToHome }) {
       setFeedback("Miss!");
       setCurrentStreak((currentStreak) => currentStreak - currentStreak);
     }
-    setTurnCounter(turnCounter => turnCounter + 1)
-    generateEquation();
     setAnswer("");
+    setTurnCounter((turnCounter) => turnCounter + 1);
+    if (turnCounter > 2) {
+      setTurnCounter(1);
+      togglePhase();
+    }
+    generateEquation();
   };
 
   return (
@@ -282,7 +287,7 @@ function GamePage({ navToHome }) {
       </div>
 
       <button onClick={togglePhase}>
-        {attackPhase ? "Switch to defense" : "Switch to attack"}
+        {playerTurn ? "Switch to defense" : "Switch to attack"}
       </button>
       <div className="gameInfoCard">
         <div>Name: {playerName}</div>
@@ -293,6 +298,7 @@ function GamePage({ navToHome }) {
         <div>Cap: {cap}</div>
         <div>Current Streak: {currentStreak}</div>
         <div>Best Streak: {bestStreak}</div>
+        <div>Turn Counter: {turnCounter}</div>
       </div>
       {monster && (
         <div className="enemyInfoCard">
@@ -300,7 +306,7 @@ function GamePage({ navToHome }) {
           <div>Enemy HP: {monsterHP}</div>
         </div>
       )}
-
+      {playerTurn ? <div>Player's turn</div> :<div>Monster's turn</div>}
       <div className="equationCard">
         <div>{feedback}</div>
         <div>{printedEquation}</div>
