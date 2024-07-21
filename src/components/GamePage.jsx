@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import monsters from "./monsterIndex";
 
 function GamePage({ navToHome }) {
+  const [gameActive, setGameActive] = useState(false);
   const [playerName, setPlayerName] = useState("");
   const [difficulty, setDifficulty] = useState("Easy");
   const [playerHP, setPlayerHP] = useState(0);
@@ -20,15 +21,20 @@ function GamePage({ navToHome }) {
   const [missingValue, setMissingValue] = useState("");
   const [answer, setAnswer] = useState("");
 
+  const toggleGameActive = () => {
+    setGameActive((gameActive) => !gameActive);
+  };
+
   const handlePlayerName = (e) => {
     setPlayerName(e.target.value);
   };
 
   const togglePhase = () => {
-    setPlayerTurn(playerTurn => !playerTurn);
-  }
+    setPlayerTurn((playerTurn) => !playerTurn);
+  };
 
   const startGame = () => {
+    toggleGameActive();
     setStartingHP();
     // Get monster from array
     getNextMonster();
@@ -171,14 +177,19 @@ function GamePage({ navToHome }) {
       setCurrentStreak((currentStreak) => currentStreak - currentStreak);
     }
     setAnswer("");
-    if (turnCounter > 2) {
-      setTurnCounter(1);
-      togglePhase();
-    } else {
-      setTurnCounter((turnCounter) => turnCounter + 1);
-    }
-    generateEquation();
+    setTurnCounter((turnCounter) => turnCounter + 1);
   };
+
+  useEffect(() => {
+    if (turnCounter > 3) {
+      //TODO - Apply damage to target
+      togglePhase();
+      setTurnCounter(1);
+      generateEquation();
+    } else {
+      generateEquation();
+    }
+  }, [turnCounter]);
 
   return (
     <div>
@@ -290,39 +301,44 @@ function GamePage({ navToHome }) {
       <button onClick={togglePhase}>
         {playerTurn ? "Switch to defense" : "Switch to attack"}
       </button>
-      <div className="gameInfoCard">
-        <div>Name: {playerName}</div>
-        <div>Level: {playerLevel}</div>
-        <div>Player HP: {playerHP}</div>
-        <div>Difficulty: {difficulty}</div>
-        <div>Problem type: {gameMode}</div>
-        <div>Cap: {cap}</div>
-        <div>Current Streak: {currentStreak}</div>
-        <div>Best Streak: {bestStreak}</div>
-        <div>Turn Counter: {turnCounter}</div>
-      </div>
-      {monster && (
-        <div className="enemyInfoCard">
-          <div>Enemy type: {monster.name} </div>
-          <div>Enemy HP: {monsterHP}</div>
+      {gameActive && (
+        <div>
+          <div className="gameInfoCard">
+            <div>Name: {playerName}</div>
+            <div>Level: {playerLevel}</div>
+            <div>Player HP: {playerHP}</div>
+            <div>Difficulty: {difficulty}</div>
+            <div>Problem type: {gameMode}</div>
+            <div>Cap: {cap}</div>
+            <div>Current Streak: {currentStreak}</div>
+            <div>Best Streak: {bestStreak}</div>
+            <div>Turn Counter: {turnCounter}</div>
+          </div>
+          {monster && (
+            <div className="enemyInfoCard">
+              <div>Enemy type: {monster.name} </div>
+              <div>Enemy HP: {monsterHP}</div>
+            </div>
+          )}
+          {playerTurn ? <div>Player's turn</div> : <div>Monster's turn</div>}
+          <div className="equationCard">
+            <div>{feedback}</div>
+
+            <div>{printedEquation}</div>
+          </div>
+
+          <form onSubmit={checkAnswer}>
+            <input
+              name="answer"
+              type="number"
+              id="answer"
+              value={answer}
+              onChange={(e) => setAnswer(Number(e.target.value))}
+            />
+            <button>Check</button>
+          </form>
         </div>
       )}
-      {playerTurn ? <div>Player's turn</div> :<div>Monster's turn</div>}
-      <div className="equationCard">
-        <div>{feedback}</div>
-        <div>{printedEquation}</div>
-      </div>
-
-      <form onSubmit={checkAnswer}>
-        <input
-          name="answer"
-          type="number"
-          id="answer"
-          value={answer}
-          onChange={(e) => setAnswer(Number(e.target.value))}
-        />
-        <button>Check</button>
-      </form>
     </div>
   );
 }
