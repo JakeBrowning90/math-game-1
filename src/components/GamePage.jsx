@@ -13,6 +13,7 @@ function GamePage({ navToHome }) {
   const [monster, setMonster] = useState();
   const [monsterHP, setMonsterHP] = useState(0);
   const [turnCounter, setTurnCounter] = useState(1);
+  const [rightAnswers, setRightAnswers] = useState(0);
   const [cap, setCap] = useState(10);
   const [floor, setFloor] = useState(0);
   const [playerTurn, setPlayerTurn] = useState(true);
@@ -168,6 +169,8 @@ function GamePage({ navToHome }) {
     e.preventDefault();
     if (answer == missingValue) {
       setFeedback("Correct!");
+      // TODO - Add to damage counter
+      setRightAnswers((rightAnswers) => rightAnswers + 1);
       setCurrentStreak((currentStreak) => currentStreak + 1);
       if (currentStreak >= bestStreak) {
         setBestStreak((bestStreak) => bestStreak + 1);
@@ -182,9 +185,25 @@ function GamePage({ navToHome }) {
 
   useEffect(() => {
     if (turnCounter > 3) {
-      //TODO - Apply damage to target
+      if (playerTurn) {
+        // Apply damage to monster
+        if (rightAnswers == 3) {
+          setMonsterHP((monsterHP) => monsterHP - (rightAnswers + playerLevel));
+        } else {
+          setMonsterHP((monsterHP) => monsterHP - rightAnswers);
+        }
+      } else {
+        // Apply damage to player or heal 1 for perfect defense
+        if (rightAnswers == 3) {
+          setPlayerHP((playerHP) => playerHP + 1);
+        } else {
+          setPlayerHP((playerHP) => playerHP - (3 - rightAnswers));
+        }
+      }
+      // TODO - Check if player or monster is < 1 HP
       togglePhase();
       setTurnCounter(1);
+      setRightAnswers(0)
       generateEquation();
     } else {
       generateEquation();
